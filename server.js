@@ -4,7 +4,7 @@ const express = require("express");
 
 
 
-// sequelize.sync({force: true});
+//sequelize.sync({force: true});
 
 
 const app = express();
