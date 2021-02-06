@@ -1,0 +1,29 @@
+{
+  "name": "crud",
+  "version": "1.0.0",
+  "description": "un crud",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdjfs/crud-moviles.git"
+  },
+  "keywords": [
+    "crud"
+  ],
+  "author": "Marcos Fuenmayor, Juan Urdaneta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdjfs/crud-moviles/issues"
+  },
+  "homepage": "https://github.com/mdjfs/crud-moviles#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.5.0",
+    "sequelize-cli": "^6.2.0",
+    "tiny-sha256": "^1.0.2"
+  }
+}
