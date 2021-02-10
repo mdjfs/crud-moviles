@@ -23,7 +23,7 @@ app.post('/user', (req, res) => {
 })
 
 app.all('/token', (req, res) => {
-    req.body.password = req.query.hash ? req.query.hash : sha256(req.body.password);
+    req.body.password = sha256(req.body.password);
     token(req.body)
     .then(token => res.status(200).send(token))
     .catch(err => res.status(500).send(err));
@@ -41,15 +41,17 @@ app.get('/user', protected, (req, res) => {
  * This Endpoint takes the ID and any specific data you want to modified from the User you selected
  */
 app.put('/user', protected, (req, res) => {
-    User.update(req.body, {
-        where: req.user
-    }).then(() => {
-        req.body = {
-            id: req.user.id
-        };
-        res.redirect(`/token?hash=${req.user.password}`);
-    })
-    .catch(error => res.status(500).send(error));
+    const pass = req.body.password ? sha256(req.body.password) : req.user.password;
+    const promises = [
+        User.update(req.body, {where: req.user}),
+        token({
+            id: req.user.id,
+            password: pass
+        })
+    ];
+    Promise.all(promises)
+    .then(result => res.status(200).send(result[1]))
+    .catch(err => res.status(500).send(err));
 })
 
 /**
