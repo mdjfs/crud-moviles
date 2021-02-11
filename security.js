@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const keygen = require("ssh-keygen");
+const keypair = require("keypair");
 const jwt = require("jsonwebtoken");
 const {User} = require("./database/models");
 
@@ -11,16 +11,12 @@ const keys = {
 const keys_path = path.join(__dirname, "./keys");
 
 if(!fs.existsSync(keys_path)){
-    fs.mkdirSync(keys_path);
-    keygen({
-        location: path.join(keys_path, "key"),
-        format: "PEM",
-    }, (err, out) => {
-        if(!err){
-            keys.private = out.key;
-            keys.public = out.pubKey;
-        }else console.error(err);
-    });
+    fs.mkdirSync(keys_path);   
+    const pair = keypair();
+    keys.private = pair.private;
+    keys.public = pair.public;
+    fs.writeFileSync(path.join(keys_path, "key"), keys.private);
+    fs.writeFileSync(path.join(keys_path, "key.pub"), keys.public);
 }else{
     keys.private = fs.readFileSync(path.join(keys_path, "key"), {encoding: "utf-8"});
     keys.public = fs.readFileSync(path.join(keys_path, "key.pub"), {encoding: "utf-8"});
