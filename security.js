@@ -10,6 +10,9 @@ const keys = {
 }
 const keys_path = path.join(__dirname, "./keys");
 
+/**
+ * Here the server will create the Private Keys for the tokens in the case that the keys are already cretaed this will only read it
+ */
 if(!fs.existsSync(keys_path)){
     fs.mkdirSync(keys_path);
     keygen({
@@ -26,7 +29,9 @@ if(!fs.existsSync(keys_path)){
     keys.public = fs.readFileSync(path.join(keys_path, "key.pub"), {encoding: "utf-8"});
 }
 
-
+/**
+ * This will know if the user ID Exist or not
+ */
 async function findUser(target){
     const user = await User.findOne({
         where: target
@@ -35,6 +40,9 @@ async function findUser(target){
     return user.dataValues;
 }
 
+/**
+ * This Function will be use for Authentication, this Will get the JWToken Header and analize them to know if it has the correct Data
+ */
 function protected(req, res, next){
     jwt.verify(req.header("X-User-Token"), keys.private, {algorithms: ['RS256']}, (err, decoded) => {
         if(!err){
@@ -47,6 +55,9 @@ function protected(req, res, next){
     })
 }
 
+/**
+ * This Function Creates the "Token", this will get not only the user Info, also will get a Private Key all Encripted by Sha256
+ */
 async function token(body){
     if(!body.password) throw "No password provided.";
     const user = await findUser(body);
