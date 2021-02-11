@@ -37,3 +37,13 @@ $ node .
 The server will work on Port 3000, this port can be changed in the server.js File, for the management of the route for the server can be located in http://localhost:(selected port)/user.
 
 And that would be all the installation you will need for this CRUD.
+
+### Security Update 
+
+In this Update we added 2 new Security Features:
+
+* [JsonWebToken] - With JwToken the server will know if the user is a really Log in.
+* [Sha256] - With this Algorithim the Server can Encrypt all the Passwords of the users.
+* [Keypair] - This is a Private/Public Key Generator
+
+When the server starts for the first time wil created a Private Key, The time a user gets Created the Function Token will take the Users Data and the Private Keys to create a Token. With this token the server can know if the user Exist in the Database and if the User is real thanks to the Tokens Value.
