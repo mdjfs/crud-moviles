@@ -42,16 +42,8 @@ app.get('/user', protected, (req, res) => {
  * User Info but also the Token, This is because when you change your password, the Token will change as well
  */
 app.put('/user', protected, (req, res) => {
-    const pass = req.body.password ? sha256(req.body.password) : req.user.password;
-    const promises = [
-        User.update(req.body, {where: req.user}),
-        token({
-            id: req.user.id,
-            password: pass
-        })
-    ];
-    Promise.all(promises)
-    .then(result => res.status(200).send(result[1]))
+    User.update(req.body, {where: req.user})
+    .then(() => res.sendStatus(200))
     .catch(err => res.status(500).send(err));
 })
 
