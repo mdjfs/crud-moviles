@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "backend",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "npx rimraf dist && npx tsc --project tsconfig.json --noImplicitAny",
+    "start:prod": "npx ts-node src/server.ts",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'npx ts-node' src/server.ts",
+    "db": "npx ts-node src/database/cli.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sequelize": "^6.5.0",
+    "sequelize-typescript": "^2.1.0",
+    "tiny-sha256": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/sequelize": "^4.28.9",
+    "commander": "^7.1.0",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
