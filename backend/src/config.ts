@@ -6,7 +6,6 @@ import { SequelizeOptions } from "sequelize-typescript";
 
 interface configT{
     secretKey: string,
-    tokenHeader: string,
     port?: string,
     database:{
         development: SequelizeOptions,
