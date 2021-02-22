@@ -49,7 +49,7 @@ You can stores and manage:
 ------------
 
 
-:fa-plane: `POST` **/login**  (PUBLIC)
+:airplane: `POST` **/login**  (PUBLIC)
 
 > Get the access token
 
@@ -61,7 +61,7 @@ You can stores and manage:
     }
 
 ------------
-:fa-plane: `POST` **/user** (PUBLIC)
+:airplane: `POST` **/user** (PUBLIC)
 
 > Create new user and get the access token
 
@@ -72,12 +72,12 @@ You can stores and manage:
         password: string
     }
 ------------
-:fa-plane: `GET` **/user** 
+:airplane: `GET` **/user** 
 ** Requires the Authorization Header
 > Get info of the user
 
 ------------
-:fa-plane: `PUT` **/user** 
+:airplane: `PUT` **/user** 
 ** Requires the Authorization Header
 > Updates the user
 
@@ -89,12 +89,12 @@ You can stores and manage:
     }
 
 ------------
-:fa-plane: `DELETE` **/user** 
+:airplane: `DELETE` **/user** 
 ** Requires the Authorization Header
 > Deletes the user
 
 ------------
-:fa-plane: `POST` **/form** :fa-warning: Requires Admin Account
+:airplane: `POST` **/form** :secret: Requires Admin Account
 ** Requires the Authorization Header
 > Creates a new form
 
@@ -121,8 +121,10 @@ You can stores and manage:
     }
 
 ------------
-:fa-plane: `GET` **/form** 
+:airplane: `GET` **/form** 
+
 ** Requires the Authorization Header
+
 > Get info of form
 
 **BODY STRUCTURE:**
@@ -133,8 +135,10 @@ You can stores and manage:
     }
 
 ------------
-:fa-plane: `DELETE` **/form** :fa-warning: Requires Admin Account
+:airplane: `DELETE` **/form** :secret: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Delete a form
 
 **URL QUERY STRUCTURE:**
@@ -142,8 +146,10 @@ You can stores and manage:
 * id: number
 
 ------------
-:fa-plane: `POST` **/menu** :fa-warning: Requires Admin Account
+:airplane: `POST` **/menu** :secret: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Create a new menu
 
 **BODY STRUCTURE:**
@@ -155,8 +161,10 @@ You can stores and manage:
     }
 
 ------------
-:fa-plane: `GET` **/menu** 
+:airplane: `GET` **/menu** 
+
 ** Requires the Authorization Header
+
 > Get tree structured for a target menu or all menus
 
 **URL QUERY STRUCTURE:**
@@ -164,8 +172,10 @@ You can stores and manage:
 * id?: number
 
 ------------
-:fa-plane: `DELETE` **/menu**  :fa-warning: Requires Admin Account
+:airplane: `DELETE` **/menu**  :secret: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Delete a menu
 
 **URL QUERY STRUCTURE:**
@@ -173,8 +183,10 @@ You can stores and manage:
 * id: number
 
 ------------
-:fa-plane: `POST` **/result** 
+:airplane: `POST` **/result** 
+
 ** Requires the Authorization Header
+
 > Create a new result
 
 **BODY STRUCTURE:**
@@ -189,8 +201,10 @@ You can stores and manage:
     
 
 ------------
-:fa-plane: `GET` **/result** :fa-warning: Requires Admin Account
+:airplane: `GET` **/result** :secret: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Get results by id, form id, or by default user id
 
 **BODY STRUCTURE:**
@@ -203,8 +217,10 @@ You can stores and manage:
     
 
 ------------
-:fa-plane: `DELETE` **/result** :fa-warning: Requires Admin Account
+:airplane: `DELETE` **/result** :secret: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Delete a result
 
 **URL QUERY STRUCTURE:**
@@ -213,3 +229,5 @@ You can stores and manage:
 * formId?: number
 * userId?: number
 
+@mdjfs
+@blue01H
