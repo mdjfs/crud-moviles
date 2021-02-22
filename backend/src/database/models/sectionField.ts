@@ -3,7 +3,7 @@ import Field from "./field";
 
 import { Table, Column, Model, ForeignKey } from "sequelize-typescript";
 
-@Table({timestamps: true})
+@Table({timestamps: true, tableName: "section_field", freezeTableName: true})
 export default class SectionField extends Model{
 
     @ForeignKey(() => Section)

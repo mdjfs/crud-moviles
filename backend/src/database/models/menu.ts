@@ -4,7 +4,7 @@ import Queries from "../queries/constants";
 
 import { QueryTypes } from "sequelize";
 
-import { Table, Column, Model, ForeignKey, AllowNull, Sequelize, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, ForeignKey, AllowNull,  BelongsTo } from "sequelize-typescript";
 
 
 interface FormatedMenu{
@@ -15,7 +15,9 @@ interface FormatedMenu{
     childrens: FormatedMenu[]
 }
 
-@Table({timestamps: true})
+export {FormatedMenu};
+
+@Table({timestamps: true, tableName: "menu", freezeTableName: true})
 export default class Menu extends Model{
 
     
@@ -27,7 +29,9 @@ export default class Menu extends Model{
     @Column
     parentId: number
 
-    @BelongsTo(() => Menu)
+    @BelongsTo(() => Menu, {
+        onDelete: "CASCADE"
+    })
     menu: Menu
 
     @ForeignKey(() => Form)
@@ -35,11 +39,18 @@ export default class Menu extends Model{
     @Column
     formId: number
 
+    @BelongsTo(() => Form, {
+        onDelete: "CASCADE"
+    })
+    form: Form
 
-    async getDescendants(sequelize: Sequelize, limit=null): Promise<FormatedMenu>{
-        const menus: Menu[] =  await sequelize
-            .query(limit ? Queries.MENU_RECURSIVE_DESCENDANT_LIMIT : Queries.MENU_RECURSIVE_DESCENDANT_NO_LIMIT, 
-            {replacements: limit ? { id: this.id, limit: limit  } : { id: this.id  } , 
+    async getDescendants(limit: number=null): Promise<FormatedMenu>{
+        const hasLimit = limit && !isNaN(limit);
+        const replacements: {id: number, limit?: number} = { id: this.id }
+        if(hasLimit) replacements.limit = limit;
+        const menus: Menu[] =  await this.sequelize.
+            query(Queries.MENU_RECURSIVE("menu", hasLimit), 
+            {replacements: replacements, 
             model: Menu, type: QueryTypes.SELECT});
         return this.makeTree(menus);
     }
@@ -55,15 +66,15 @@ export default class Menu extends Model{
     }
 
     private makeTree(menus: Menu[]): FormatedMenu{
-        const formatedMenus: FormatedMenu[] = menus.map(menu => this.format(menu)).sort((a, b) => a.id - b.id);
+        let formatedMenus: FormatedMenu[] = menus.map(menu => this.format(menu)).sort((a, b) => a.id - b.id);
         const tree: FormatedMenu = formatedMenus.shift();
         const parse = (tree: FormatedMenu) => {
-            for(const menu of formatedMenus){
-                if(tree.id = menu.parentId){
-                    tree.childrens.push(menu);
+            tree.childrens = formatedMenus.filter(menu => {
+                if(tree.id == menu.parentId){
                     parse(menu);
-                }
-            }
+                    return true;
+                } else return false;
+            })
         }
         parse(tree);
         return tree;

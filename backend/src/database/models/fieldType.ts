@@ -1,12 +1,15 @@
-import { Table, Column, Model, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, HasMany, Unique } from "sequelize-typescript";
 import Field from "./field";
 
-@Table({timestamps: true})
+@Table({timestamps: true, tableName: "field_type", freezeTableName: true})
 export default class FieldType extends Model{
 
+    @Unique
     @Column
     name: string
 
-    @HasMany(() => Field)
+    @HasMany(() => Field, {
+        onDelete: "CASCADE"
+    })
     fields: Field[]
 }

@@ -2,3 +2,4 @@ node_modules
 dist
 src/database/config/config.json
 package-lock.json
+config.json

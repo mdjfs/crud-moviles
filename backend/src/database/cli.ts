@@ -1,6 +1,6 @@
 
 import { Command } from 'commander';
-import { createDatabase } from "./index";
+import { createDatabase, getDatabase } from "./index";
 
 const program = new Command();
 
@@ -8,8 +8,70 @@ program
 .command("restart")
 .description("Restarts databse")
 .action(async () => {
-    await createDatabase();
-    console.log("Database created!");
+    try{ 
+        const database = await createDatabase();
+        const { Role } = database.models;
+        await Role.create({name: "admin"});
+        await Role.create({name: "user"});
+        console.log("Database created.")
+    }catch(e){
+        console.log(e);
+    }
+});
+
+program
+.command("admin [password]")
+.description("Create or modify password of 'admin' account")
+.action(async (password) => {
+    try{
+        const database = getDatabase();
+        const { User } = database.models;
+        const find = await User.findOne({ where: { username: "admin" } });
+        if(find){
+            await find.update({password: password});
+            await find.setRole("admin");
+            console.log("Admin account updated.")
+        }else{
+            const admin = await User.create({username: "admin", password: password});
+            await admin.setRole("admin");
+            console.log("Admin account created and updated.")
+        }
+    }catch(e){
+        console.log(e);
+    }
+});
+
+program
+.command("add-input [name]")
+.description("Create a input type")
+.action(async (name) => {
+    try{
+        const database = getDatabase();
+        const { FieldType } = database.models;
+        await FieldType.create({name: name});
+        console.log(`Field type ${name} created.`);
+    }catch(e){
+        console.log(e);
+    }
+})
+
+program
+.command("remove-input [name]")
+.description("Remove a input type")
+.action(async (name) => {
+    try{
+        const database = getDatabase();
+        const { FieldType } = database.models;
+        const field = await FieldType.findOne({ where: { name: name }})
+        if(field){
+            await field.destroy();
+            console.log(`Field type ${name} removed.`);
+        }else{
+            console.log(`Field type ${name} doesn't exist!`)
+        }
+    }catch(e){
+        console.log(e);
+    }
 })
 
 program.parse(process.argv);

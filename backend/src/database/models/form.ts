@@ -1,9 +1,8 @@
 import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
-import Menu from "./menu";
 import Result from "./result";
 import Section from "./section";
 
-@Table({timestamps: true})
+@Table({timestamps: true, tableName: "form"})
 export default class Form extends Model{
 
     @Column
@@ -12,12 +11,13 @@ export default class Form extends Model{
     @Column({type: DataType.TEXT})
     description: string
 
-    @HasMany(() => Result)
+    @HasMany(() => Result, {
+        onDelete: "CASCADE"
+    })
     results: Result[]
 
-    @HasMany(() => Menu)
-    menus: Menu[]
-
-    @HasMany(() => Section)
+    @HasMany(() => Section, {
+        onDelete: "CASCADE"
+    })
     sections: Section[]
 }
