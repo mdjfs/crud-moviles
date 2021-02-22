@@ -73,12 +73,16 @@ You can stores and manage:
     }
 ------------
 :airplane: `GET` **/user** 
+
 ** Requires the Authorization Header
+
 > Get info of the user
 
 ------------
 :airplane: `PUT` **/user** 
+
 ** Requires the Authorization Header
+
 > Updates the user
 
 **BODY STRUCTURE:**
@@ -90,12 +94,16 @@ You can stores and manage:
 
 ------------
 :airplane: `DELETE` **/user** 
+
 ** Requires the Authorization Header
+
 > Deletes the user
 
 ------------
-:airplane: `POST` **/form** :secret: Requires Admin Account
+:airplane: `POST` **/form** :warning: Requires Admin Account
+
 ** Requires the Authorization Header
+
 > Creates a new form
 
 **BODY STRUCTURE:**
@@ -135,7 +143,7 @@ You can stores and manage:
     }
 
 ------------
-:airplane: `DELETE` **/form** :secret: Requires Admin Account
+:airplane: `DELETE` **/form** :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 
@@ -146,7 +154,7 @@ You can stores and manage:
 * id: number
 
 ------------
-:airplane: `POST` **/menu** :secret: Requires Admin Account
+:airplane: `POST` **/menu** :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 
@@ -172,7 +180,7 @@ You can stores and manage:
 * id?: number
 
 ------------
-:airplane: `DELETE` **/menu**  :secret: Requires Admin Account
+:airplane: `DELETE` **/menu**  :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 
@@ -201,7 +209,7 @@ You can stores and manage:
     
 
 ------------
-:airplane: `GET` **/result** :secret: Requires Admin Account
+:airplane: `GET` **/result** :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 
@@ -217,7 +225,7 @@ You can stores and manage:
     
 
 ------------
-:airplane: `DELETE` **/result** :secret: Requires Admin Account
+:airplane: `DELETE` **/result** :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 
