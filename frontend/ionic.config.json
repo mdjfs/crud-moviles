@@ -1,7 +1,5 @@
 {
-  "name": "frontend",
-  "integrations": {
-    "capacitor": {}
-  },
+  "name": "Form_App",
+  "integrations": {},
   "type": "angular"
 }
