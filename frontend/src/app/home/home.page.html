@@ -1,27 +1,26 @@
-
   <ion-header>
     <ion-toolbar color = "primary">
-      <ion-title>
+      <ion-title class= "ion-text-center">
        Welcome to F-Forms
       </ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-content class="auth-form">
+  <ion-content>
     <ion-grid>
       <ion-row>
         <ion-row align-self-center>
-          <ion-item>
+          <ion-item color="none" >
             <ion-label position="floating" >Username</ion-label>
             <ion-input inputmode = "text"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item color="none" >
             <ion-label position="floating">Password</ion-label>
             <ion-input inputmode = "text" type = "password"></ion-input>
           </ion-item>
         </ion-row>
         <ion-col align-self-center>
-          <ion-button [routerLink]="['/login']" expand="block" color="primary" type ="submit">Sign In</ion-button>
+          <ion-button [routerLink]="['/user-menu']" expand="block" color="primary" type ="submit">Sign In</ion-button>
           <ion-button [routerLink]="['/registration']" expand="block" color="medium">Register</ion-button>
         </ion-col>
       </ion-row>
