@@ -48,14 +48,18 @@ ion-slide {
 }
 
 ion-slide img{
-  max-width: 60%;
+  max-height: 40%;
 }
 
 ion-slide p {
   padding: 10%;
+
+  padding-top:0%;
+  text-align: center;
 }
 
 .background{
   background: url("../../assets/images/home/background.jpg") no-repeat;
+  background-size: 100% 100%;
 
 }
