@@ -1,0 +1,39 @@
+
+
+<ion-content>
+  <ion-grid class="city-background" >
+    <ion-card class="ion-padding" style="background-color:rgba(255,255,255,0.3); min-width:20%;">
+
+      <ion-spinner class="ion-padding" color="primary" *ngIf="loading; else register"></ion-spinner>
+      <ng-template #register>
+
+      <ion-icon name="help-circle"  style="font-size: 25px; "  *ngIf="hadWelcome" (click)="seeWelcome()"></ion-icon>
+        <ion-col class="ion-padding  ion-text-center" align-self-center #register>
+          <ion-row class="ion-padding" class="ion-justify-content-center">
+            <ion-col align-self-center>
+
+              <ion-item color="danger" *ngIf="error">
+                * Error: {{ error }}
+              </ion-item>
+
+              <ion-item color="none">
+                <ion-label position="floating">Username</ion-label>
+                <ion-input inputmode = "text" #user></ion-input>
+              </ion-item>
+              <ion-item color="none" >
+                <ion-label position="floating">Password</ion-label>
+                <ion-input inputmode = "text" type = "password" #pass></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+          <ion-col class="ion-padding" align-self-center>
+            <ion-button (click)="processRegister(user.value, pass.value)" expand="block" color="primary" type ="submit">Sign Up</ion-button>
+            <ion-button [routerLink]="['/login']" expand="block" color="secondary">Do you have an account?</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+      </ng-template>
+    </ion-card>
+  </ion-grid>
+</ion-content>

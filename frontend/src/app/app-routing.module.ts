@@ -1,27 +1,34 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [
-  {
-    path: 'welcome',
-    loadChildren: () => import('./welcome/welcome.module').then( m => m.WelcomePageModule)
-  },
   {
     path: '',
     redirectTo: 'welcome',
     pathMatch: 'full'
   },
   {
-    path: 'user-menu',
-    loadChildren: () => import('./user-menu/user-menu.module').then( m => m.UserMenuPageModule)
+    path: 'welcome',
+    loadChildren: () => import('./public/welcome/welcome.module').then( m => m.WelcomePageModule)
   },
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: 'login',
+    loadChildren: () => import('./public/login/login.module').then( m => m.LoginPageModule)
   },
   {
     path: 'registration',
-    loadChildren: () => import('./registration/registration.module').then( m => m.RegistrationPageModule)
+    loadChildren: () => import('./public/registration/registration.module').then( m => m.RegistrationPageModule)
+  },
+  {
+    path: 'menu',
+    loadChildren: () => import('./protected/menu/menu.module').then( m => m.MenuPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'menu/:id',
+    loadChildren: () => import('./protected/menu/menu.module').then( m => m.MenuPageModule),
+    canActivate: [AuthGuardService]
   }
 ];
 

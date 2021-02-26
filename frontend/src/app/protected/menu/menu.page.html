@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="parent">
+      <ion-button (click)="open(parent.parentId)" *ngIf="parent.parentId; else main">
+        <ion-icon name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+      <ng-template #main>
+        <ion-button [routerLink]="['/menu']">
+          <ion-icon name="arrow-back-circle-outline"></ion-icon>
+        </ion-button>
+      </ng-template>
+    </ion-buttons>
+    <ion-title>{{ parent && parent.name ? parent.name : "Forms" }} - {{ user && user.username ? user.username : ""}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="userService.logout()">
+        <ion-icon slot="icon-only" ios="log-out-outline" md="log-out-outline" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list  class="blue-background" style="min-width: 100%; min-height: 100%; ">
+    <ion-item *ngFor="let menu of menus"color="none" lines="none">
+      <ion-button (click)="open(menu.id)" (tap)="options(menu.id)" expand="block" size="large" shape="round">{{menu.name}}</ion-button>
+    </ion-item>
+    <ion-item color="none" lines="none" *ngIf="isAdmin">
+      <ion-button *ngIf="loading; else add" expand="block" size="large" color="transparent" shape="round">
+        <ion-spinner class="ion-padding" color="primary"></ion-spinner>
+      </ion-button>
+      <ng-template #add>
+        <ion-button (click)="create()" expand="block" size="large" color="transparent" shape="round">
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-button>
+      </ng-template>
+    </ion-item>
+  </ion-list>
+</ion-content>
+

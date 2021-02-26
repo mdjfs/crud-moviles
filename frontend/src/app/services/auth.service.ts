@@ -1,9 +1,23 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import {  HttpHeaders, HttpClient } from '@angular/common/http';
+import { share } from 'rxjs/operators';
 
 interface UserData{
   username: string,
   password: string
+}
+
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+  })
+};
+
+const storageKeys = {
+  auth: "Authorization"
 }
 
 @Injectable({
@@ -12,49 +26,35 @@ interface UserData{
 export class AuthService {
 
   api_url: string = undefined;
-  token: string = undefined;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.api_url = environment.api_url;
   }
 
-  async login(data: UserData): Promise<Boolean>{
-    try{
-      const response = await fetch(`${this.api_url}/login`, {
-        method: "POST",
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(data)
-      });
-      const text = await response.text();
-      if(response.status !== 200) throw new Error(text);
-      else this.token = text;
-      return null;
-    }catch(e){
-      return e;
-    }
+  public login(data: UserData): Observable<string>{
+    const request =  this.http.post(`${this.api_url}/login`, data, {...httpOptions, responseType: "text"}).pipe(share());
+    request.subscribe((token: string) => {
+      localStorage.setItem(storageKeys.auth, token);
+    })
+    return request;
   }
 
-  async register(data: UserData): Promise<Error|null>{
-    try{
-      const response = await fetch(`${this.api_url}/user`, {
-        method: "POST",
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(data)
-      });
-      const text = await response.text();
-      if(response.status !== 200) throw new Error(text);
-      else this.token = text;
-      return null;
-    }catch(e){
-      return e;
-    }
+  public register(data: UserData): Observable<string>{
+    const request =  this.http.post(`${this.api_url}/user`, data, {...httpOptions, responseType: "text"}).pipe(share());
+    request.subscribe((token: string) => {
+      localStorage.setItem(storageKeys.auth, token);
+    })
+    return request;
   }
 
-  isLogged(): Boolean{
-    return this.token === null;
+  public isLogged(): Boolean{
+    return this.getToken() !== null;
   }
 
-  getToken(): string{
-    return this.token;
+  public getToken(): string{
+    return localStorage.getItem(storageKeys.auth);
   }
 }
+
+
+export {storageKeys};
