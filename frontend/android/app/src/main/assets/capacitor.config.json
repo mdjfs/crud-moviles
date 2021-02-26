@@ -9,5 +9,12 @@
       "launchShowDuration": 0
     }
   },
+<<<<<<< HEAD
   "cordova": {}
+=======
+  "cordova": {},
+  "server": {
+    "url": "http://192.168.5.214:8100"
+  }
+>>>>>>> origin/Juan-Front
 }

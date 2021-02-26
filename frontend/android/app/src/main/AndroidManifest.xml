@@ -8,6 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+<<<<<<< HEAD
+=======
+        android:usesCleartextTraffic="true"
+>>>>>>> origin/Juan-Front
         android:theme="@style/AppTheme">
 
         <activity
