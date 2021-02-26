@@ -20,27 +20,33 @@ export class AuthService {
 
   async login(data: UserData): Promise<Boolean>{
     try{
-      const response =  await fetch(`${this.api_url}/login`, {
+      const response = await fetch(`${this.api_url}/login`, {
         method: "POST",
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
-      this.token = await response.text();
-      return true;
-    }catch{
-      return false;
+      const text = await response.text();
+      if(response.status !== 200) throw new Error(text);
+      else this.token = text;
+      return null;
+    }catch(e){
+      return e;
     }
   }
 
-  async register(data: UserData): Promise<Boolean>{
+  async register(data: UserData): Promise<Error|null>{
     try{
       const response = await fetch(`${this.api_url}/user`, {
         method: "POST",
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
-      this.token = await response.text();
-      return true;
-    }catch{
-      return false;
+      const text = await response.text();
+      if(response.status !== 200) throw new Error(text);
+      else this.token = text;
+      return null;
+    }catch(e){
+      return e;
     }
   }
 
