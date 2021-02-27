@@ -45,6 +45,7 @@ async function create(data: FormData){
             }
         }
     }
+    return form.id;
 }
 
 interface FormTarget{
@@ -90,6 +91,13 @@ async function read(target: FormTarget): Promise<FormData>{
     return data;
 }
 
+/**
+ * Get all forms
+ */
+async function getAll(){
+    const forms = await Form.findAll();
+    return forms;
+}
 
 /**
  * Delete a form
@@ -105,5 +113,6 @@ export {create, read, del, FormData, FormTarget, SectionData, FieldData};
 export default {
     create: create,
     read: read,
-    del: del
+    del: del,
+    getAll: getAll
 }

@@ -47,6 +47,11 @@ async function read(target: UserTarget){
     };
 }
 
+async function getAll(){
+    const users = await User.findAll();
+    return users;
+}
+
 /**
  * Updates user in the database
  * @param data User Data
@@ -71,11 +76,12 @@ async function del(target: UserTarget){
     await User.destroy({ where: {...target} });
 }
 
-export {create, read, update, del, UserData, UserOptions, UserTarget};
+export {create, read, update, del, UserData, UserOptions, UserTarget, getAll};
 
 export default {
     create: create,
     read: read,
     update: update,
-    del: del
+    del: del,
+    getAll: getAll
 }

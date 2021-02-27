@@ -78,6 +78,14 @@ You can stores and manage:
 
 > Get info of the user
 
+
+------------
+:airplane: `GET` **/user/all**  :warning: Requires Admin Account
+
+** Requires the Authorization Header
+
+> Get all of the users
+
 ------------
 :airplane: `PUT` **/user** 
 
@@ -133,6 +141,14 @@ You can stores and manage:
 
 ** Requires the Authorization Header
 
+> Get all forms
+
+
+------------
+:airplane: `PUT` **/form** 
+
+** Requires the Authorization Header
+
 > Get info of form
 
 **BODY STRUCTURE:**
@@ -180,6 +196,17 @@ You can stores and manage:
 * id?: number
 
 ------------
+:airplane: `PUT` **/menu** 
+
+** Requires the Authorization Header
+
+> Update menu
+
+**URL QUERY STRUCTURE:**
+
+* id: number
+
+------------
 :airplane: `DELETE` **/menu**  :warning: Requires Admin Account
 
 ** Requires the Authorization Header
@@ -209,7 +236,7 @@ You can stores and manage:
     
 
 ------------
-:airplane: `GET` **/result** :warning: Requires Admin Account
+:airplane: `PUT` **/result** :warning: Requires Admin Account
 
 ** Requires the Authorization Header
 

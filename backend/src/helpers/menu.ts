@@ -29,6 +29,11 @@ async function read(id: number, limit: number){
     }
 }
 
+async function update(id: number, data: MenuData){
+    const menu = await Menu.findOne({ where: { id: id } });
+    await menu.update(data);
+}
+
 async function del(id: number){
     await Menu.destroy({ where: { id: id } });
 }
@@ -38,5 +43,6 @@ export {create, read, del, MenuData};
 export default {
     create: create,
     read: read,
-    del: del
+    del: del,
+    update: update
 }

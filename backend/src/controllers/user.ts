@@ -1,5 +1,5 @@
 import hasha from "hasha";
-import {create, read, update, del, UserData} from "../helpers/user";
+import {create, read, update, del, UserData, getAll} from "../helpers/user";
 import jwt from "jsonwebtoken";
 import config from "../config";
 
@@ -30,5 +30,6 @@ export default {
     register: register,
     update: update,
     del: del,
-    read: read
+    read: read,
+    getAll: getAll
 }

@@ -34,6 +34,19 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.get('/user/all', auth, async (req: UserRequest, res) => {
+    try{
+        if(req.user.role == "admin"){
+            const users = await User.getAll();
+            res.status(200).send(users);
+        }else{
+            res.sendStatus(403);
+        }
+    }catch(e){
+        res.status(500).send(e.message);
+    }
+})
+
 router.post('/user', async (req, res) => {
     try{
         const token = await User.register(req.body);
@@ -73,6 +86,15 @@ router.delete('/user', auth, async (req: UserRequest, res) => {
 
 router.get('/form', auth, async (req: UserRequest, res) => {
     try{
+        const forms = await Form.getAll();
+        res.status(200).send(forms);
+    }catch(e){
+        res.status(500).send(e.message);
+    }
+});
+
+router.put('/form', auth, async (req: UserRequest, res) => {
+    try{
         const form = await Form.read(req.body)
         res.status(200).send(form);
     }catch(e){
@@ -83,8 +105,9 @@ router.get('/form', auth, async (req: UserRequest, res) => {
 router.post('/form', auth, async (req: UserRequest, res) => {
     try{
         if(req.user.role == "admin"){      
-            await Form.create(req.body);
-            res.sendStatus(200);
+            console.log(req.body);
+            const id = await Form.create(req.body);
+            res.status(200).send({id: id});
         }else{
             res.sendStatus(403);
         }
@@ -132,6 +155,20 @@ router.post('/menu', auth, async (req: UserRequest, res) => {
     }
 });
 
+router.put('/menu', auth, async (req: UserRequest, res) => {
+    try{
+        const id = queryParseNumber(req, "id");
+        if(req.user.role == "admin"){      
+            await Menu.update(id, req.body);
+            res.sendStatus(200);
+        }else{
+            res.sendStatus(403);
+        }
+    }catch(e){
+        res.status(500).send(e.message);
+    }
+});
+
 router.delete('/menu', auth, async (req: UserRequest, res) => {
     try{
         const id = queryParseNumber(req, "id");
@@ -147,7 +184,7 @@ router.delete('/menu', auth, async (req: UserRequest, res) => {
 });
 
 
-router.get('/result', auth, async (req: UserRequest, res) => {
+router.put('/result', auth, async (req: UserRequest, res) => {
     try{
         if(req.user.role == "admin"){      
             const result = await Result.read(req.body);
