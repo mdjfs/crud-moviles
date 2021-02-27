@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>New Field</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input placeholder="Question..." #question></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Field Type</ion-label>
+      <ion-select value="input" okText="Ok" cancelText="Dismiss" #type>
+        <ion-select-option value="radiobox">Select</ion-select-option>
+        <ion-select-option value="checkbox">Multiple Select</ion-select-option>
+        <ion-select-option value="check">Check</ion-select-option>
+        <ion-select-option value="input">Text</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-card *ngIf="type.value=='checkbox'||type.value=='radiobox'">
+      <ion-card-header>Options</ion-card-header>
+      <ion-grid >
+        <ion-row  *ngFor="let option of options; let i = index;">
+        <ion-label>
+          <ion-icon (click)="removeOption(i)" name="trash"></ion-icon> {{option}}
+        </ion-label>
+        </ion-row>
+        <ion-label>
+          <ion-button (click)="newOption()"><ion-icon name="add-outline"></ion-icon> Add Option</ion-button>
+        </ion-label>
+      </ion-grid>
+    </ion-card>
+    <ion-button (click)="dismiss(question.value, type.value)"> Add Field</ion-button>
+  </ion-list>
+</ion-content>

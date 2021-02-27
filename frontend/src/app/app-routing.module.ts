@@ -29,7 +29,20 @@ const routes: Routes = [
     path: 'menu/:id',
     loadChildren: () => import('./protected/menu/menu.module').then( m => m.MenuPageModule),
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'form/:menuId',
+    loadChildren: () => import('./protected/form/form.module').then( m => m.FormPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./protected/dashboard/dashboard.module').then( m => m.DashboardPageModule),
+    canActivate: [AuthGuardService]
   }
+
+
+
 ];
 
 @NgModule({

@@ -1,0 +1,5 @@
+
+<ion-item>
+  <ion-label>{{question}}</ion-label>
+  <ion-checkbox (ionChange)="setAnswer(check.checked)" slot="start" value="{{question}}" #check></ion-checkbox>
+</ion-item>

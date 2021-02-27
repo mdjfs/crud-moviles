@@ -1,0 +1,12 @@
+<ion-item>
+  <ion-list value="biff">
+    <ion-list-header>
+      <ion-label>{{question}}</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngFor="let option of options">
+      <ion-label>{{option}}</ion-label>
+      <ion-checkbox (ionChange)="setAnswer(check.value, check.checked)" slot="start" value="{{option}}" #check></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-item>

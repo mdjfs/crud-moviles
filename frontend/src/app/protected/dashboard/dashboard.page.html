@@ -1,0 +1,34 @@
+
+<ion-content>
+  <ion-grid  class="blue-background ion-text-center" style="min-width: 100%; min-height: 100%; ">
+    <ion-row>
+      <ion-col *ngIf="answersCount">
+        <ion-card class="ion-text-center" >
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ answersCount }}</strong> answers</h1>
+        </ion-card>
+      </ion-col>
+      <ion-col *ngIf="formsCount">
+        <ion-card class="ion-text-center" >
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ formsCount }}</strong> forms</h1>
+        </ion-card>
+      </ion-col>
+      <ion-col *ngIf="formsFilled">
+        <ion-card class="ion-text-center" >
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ formsFilled }}</strong> of the forms have the answers full filled</h1>
+        </ion-card>
+      </ion-col>
+      <ion-col *ngIf="usersCount">
+        <ion-card class="ion-text-center" >
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ usersCount }}</strong>  users</h1>
+        </ion-card>
+      </ion-col>
+      <ion-col [routerLink]="['/','menu']">
+        <ion-card class="ion-text-center button" >
+          <h1>Go to menu <ion-icon name="arrow-forward-outline"></ion-icon></h1>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>
+

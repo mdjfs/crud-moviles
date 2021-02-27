@@ -22,7 +22,7 @@
 <ion-content>
   <ion-list  class="blue-background" style="min-width: 100%; min-height: 100%; ">
     <ion-item *ngFor="let menu of menus"color="none" lines="none">
-      <ion-button (click)="open(menu.id)" (tap)="options(menu.id)" expand="block" size="large" shape="round">{{menu.name}}</ion-button>
+      <ion-button (click)="open(menu.id)" (press)="options(menu.id)" expand="block" size="large" shape="round">{{menu.name}}</ion-button>
     </ion-item>
     <ion-item color="none" lines="none" *ngIf="isAdmin">
       <ion-button *ngIf="loading; else add" expand="block" size="large" color="transparent" shape="round">

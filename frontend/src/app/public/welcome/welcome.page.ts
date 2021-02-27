@@ -1,6 +1,7 @@
 import { Component} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 
 const storageKeys = {
   welcome: "hadWelcome"
@@ -13,7 +14,7 @@ const storageKeys = {
 })
 export class WelcomePage{
 
-  constructor(private router: Router, private auth: AuthService){}
+  constructor(private router: Router, private auth: AuthService, private userService: UserService){}
 
   ngOnInit(){
     if(!this.auth.isLogged()){
@@ -23,6 +24,10 @@ export class WelcomePage{
         localStorage.setItem(storageKeys.welcome, "true");
       }
     }else{
+      this.userService.getData()
+      .subscribe((user) => {
+        if(user.role == "admin") this.router.navigate(['/dashboard']);
+      })
       this.router.navigate(['/menu']);
     }
   }

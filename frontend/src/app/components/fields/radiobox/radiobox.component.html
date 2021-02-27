@@ -1,0 +1,12 @@
+<ion-item>
+  <ion-radio-group value="biff" (ionChange)="setAnswer($event.detail.value)">
+    <ion-list-header>
+      <ion-label>{{question}}</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngFor="let option of options">
+      <ion-label>{{option}}</ion-label>
+      <ion-radio slot="start" value="{{option}}"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+</ion-item>

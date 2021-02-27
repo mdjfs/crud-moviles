@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { FormService } from 'src/app/services/form.service';
+import { MenuService } from 'src/app/services/menu.service';
 import { UserService, UserData } from 'src/app/services/user.service';
 
-interface MenuData {
+export interface MenuData {
   id: number,
   formId?: number,
   parentId?:number,
@@ -11,7 +13,7 @@ interface MenuData {
   childrens?: MenuData[]
 }
 
-interface MenuParent{
+export interface MenuParent{
   id: number,
   name?: string,
   parentId?:number
@@ -28,10 +30,11 @@ export class MenuPage {
   menus: MenuData[] = [];
   isAdmin: boolean = false;
   user: UserData = undefined;
-  deepthLimit: number = 1;
+  deepthLimit: number = 2;
   loading: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private alertController: AlertController, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService,
+    private alertController: AlertController, private router: Router, private menuService: MenuService, private formService: FormService) {
 
   }
 
@@ -50,14 +53,15 @@ export class MenuPage {
   }
 
   open(id: number){
-    this.router.navigate(["/menu",id]);
+    const target = this.menus.filter(value => value.id == id)[0];
+    if(target && target.formId) this.router.navigate(["/form",target.id])
+    else this.router.navigate(["/menu",id]);
   }
 
   loadChildrens(){
     const parentId = this.activatedRoute.snapshot.params['id'];
-    const observer = this.userService.getMenu(parentId, this.deepthLimit);
     if(parentId){
-      observer.subscribe(
+      this.menuService.getMenu({id: parentId , limit: this.deepthLimit.toString()}).subscribe(
         (menu: MenuData) => {
           this.parent = {
             id: menu.id,
@@ -68,7 +72,7 @@ export class MenuPage {
         }
       )
     }else{
-      observer.subscribe(
+      this.menuService.getMenu({ limit: this.deepthLimit.toString()}).subscribe(
         (menus: MenuData[]) => {
           this.menus = menus;
         }
@@ -76,8 +80,61 @@ export class MenuPage {
     }
   }
 
-  options(id: number){
-    console.log(id);
+  async delete(id: number){
+    const menu = this.menus.filter(value => value.id == id)[0];
+    const childrens = menu.childrens;
+    if(childrens && childrens.length > 0){
+      const alert = await this.alertController.create({
+        header: `Are you sure to delete ${menu.name}? It contains ${childrens.map(value => value.name).join(',')}`,
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: 'Ok',
+            handler: () => {
+              if(menu.formId){
+                this.formService.deleteForm({id: menu.formId.toString()})
+              }
+              this.menuService.deleteMenu(id).subscribe(
+                () => this.loadChildrens()
+              );
+            }
+          }
+        ]
+      });
+      await alert.present();
+    }else{
+      this.menuService.deleteMenu(id).subscribe(
+        () => this.loadChildrens()
+      );
+    }
+  }
+
+  async options(id: number){
+    if(this.isAdmin){
+      const target = this.menus.filter(value => value.id == id)[0];
+      const buttons =  [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Delete',
+          handler: this.delete.bind(this, id)
+        }]
+      if(target.childrens.length == 0 && target.formId == undefined) buttons.push({
+        text: 'Create Form',
+        handler: () => {
+          this.router.navigate(["/form",target.id])
+        }
+      })
+      const alert = await this.alertController.create({
+        buttons: buttons
+      });
+      await alert.present();
+    }
   }
 
   async create(){
@@ -100,7 +157,7 @@ export class MenuPage {
           handler: (data) => {
             this.loading = true;
             if(this.parent && this.parent.id){
-              this.userService.createMenu({
+              this.menuService.createMenu({
                 name: data.menu,
                 parentId: this.parent.id
               }).subscribe(() => {
@@ -109,7 +166,7 @@ export class MenuPage {
               });
             }
             else{
-              this.userService.createMenu({
+              this.menuService.createMenu({
                 name: data.menu
               }).subscribe(() => {
                 this.loadChildrens();

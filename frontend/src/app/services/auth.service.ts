@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import {  HttpHeaders, HttpClient } from '@angular/common/http';
 import { share } from 'rxjs/operators';
 
-interface UserData{
+export interface UserData{
   username: string,
   password: string
 }
