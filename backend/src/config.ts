@@ -26,11 +26,58 @@ function makeConfig(): configT{
     }
 }
 
-const config: configT = makeConfig();
+const config: configT = process.env.USE_ENV ? undefined : makeConfig();
 
-const required = ["database", "secretKey"];
+if(!process.env.USE_ENV){
+    const required = ["database", "secretKey"];
 
-for(const key of required)
-    if(!config[key]) throw new Error(`${key} is required in config.json`);
+    for(const key of required)
+        if(!config[key]) throw new Error(`${key} is required in config.json`);
+}
 
-export default config;
+
+export default process.env.USE_ENV ? {
+    secretKey: process.env.SECRET_KEY,
+    port: process.env.PORT,
+    database: {
+        development:{
+            username: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASS,
+            database: process.env.DATABASE_NAME,
+            host: process.env.DATABASE_HOST,
+            dialect: process.env.DATABASE_DIALECT,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false 
+                }
+            }
+        },
+        test:{
+            username: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASS,
+            database: process.env.DATABASE_NAME,
+            host: process.env.DATABASE_HOST,
+            dialect: process.env.DATABASE_DIALECT,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false 
+                }
+            }
+        },
+        production:{
+            username: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASS,
+            database: process.env.DATABASE_NAME,
+            host: process.env.DATABASE_HOST,
+            dialect: process.env.DATABASE_DIALECT,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false 
+                }
+            }
+        }
+    }
+} : config;
