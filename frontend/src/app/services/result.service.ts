@@ -13,6 +13,12 @@ export interface ResultTarget {
   userId?:number
 }
 
+export interface ResultTargetQuery {
+  id?:string,
+  formId?:string,
+  userId?:string
+}
+
 export interface ResultData {
   id?:string,
   name: string,
@@ -20,6 +26,7 @@ export interface ResultData {
   userId?: number,
   formId: number
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +49,11 @@ export class ResultService {
 
   createResult(data: ResultData){
     const request = this.http.post(`${this.api_url}/result`, data, {headers: this.headers, responseType: "text"}).pipe(share());
+    return request;
+  }
+
+  deleteResult(target: ResultTargetQuery){
+    const request = this.http.delete(`${this.api_url}/result`, {headers: this.headers, params: { ...target }, responseType: "text" }).pipe(share());
     return request;
   }
 }

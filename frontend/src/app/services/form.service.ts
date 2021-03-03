@@ -65,7 +65,7 @@ export class FormService {
   }
 
   deleteForm(target: FormQuery){
-    const request = this.http.delete(`${this.api_url}/form`, {headers: this.headers, params: { ...target } }).pipe(share());
+    const request = this.http.delete(`${this.api_url}/form`, {headers: this.headers, params: { ...target }, responseType: "text" }).pipe(share());
     return request;
   }
 }

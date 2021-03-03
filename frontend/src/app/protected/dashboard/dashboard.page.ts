@@ -16,7 +16,7 @@ export class DashboardPage {
   formsCount: number = undefined;
   forms: FormData[] = undefined;
   results: ResultData[] = undefined;
-  formsFilled: string = undefined;
+  filledPercentage: number = undefined;
   users = undefined;
   usersCount: number = undefined;
 
@@ -55,6 +55,7 @@ export class DashboardPage {
             for(const key of Object.keys(answer.result)){
               const sections = answer.result[key];
               for(const field of sections){
+                console.log(field);
                 if(! field.answer) full = false;
               }
             }
@@ -64,7 +65,7 @@ export class DashboardPage {
         }
       }
       const percentage =(totalFull/total * 100);
-      this.formsFilled = `${isNaN(percentage) ? 0 : percentage.toFixed(0)}%`;
+      this.filledPercentage = isNaN(percentage) ? 0 : parseInt(percentage.toFixed(0));
     }
   }
 

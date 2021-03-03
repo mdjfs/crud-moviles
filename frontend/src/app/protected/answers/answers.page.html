@@ -15,7 +15,7 @@
   </div>
   <ng-template #content>
     <ion-list  class="blue-background ion-padding" style="min-width: 100%; min-height: 100%; ">
-      <ion-item button *ngFor="let result of results" (click)="open(result.id)" >
+      <ion-item button *ngFor="let result of results" (click)="open(result.id)" (press)="delete(result.id)">
         <ion-label >{{result.name}}</ion-label>
       </ion-item>
     </ion-list>

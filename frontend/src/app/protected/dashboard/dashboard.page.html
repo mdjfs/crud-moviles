@@ -12,9 +12,9 @@
           <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ formsCount }}</strong> forms</h1>
         </ion-card>
       </ion-col>
-      <ion-col *ngIf="formsFilled">
+      <ion-col *ngIf="filledPercentage">
         <ion-card class="ion-text-center" >
-          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ formsFilled }}</strong> of the forms have the answers full filled</h1>
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ filledPercentage }}%</strong> of the forms have the answers full filled</h1>
         </ion-card>
       </ion-col>
       <ion-col *ngIf="usersCount">
