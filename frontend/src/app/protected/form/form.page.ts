@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import {MenuData, MenuService} from '../../services/menu.service'
 import {FormData, SectionData,  FormService} from '../../services/form.service';
-import { UserService, UserData } from 'src/app/services/user.service';
+import {  UserData } from 'src/app/services/user.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { NewFieldPage } from './new-field/new-field.page';
 import { ResultService } from 'src/app/services/result.service';
@@ -37,7 +37,8 @@ export class FormPage implements OnInit {
   form: FormData = {
     name: "",
     description: "",
-    sections: []
+    sections: [],
+    menuId: undefined
   };
   user: UserData = undefined;
   isAdmin: boolean = false;
@@ -54,7 +55,7 @@ export class FormPage implements OnInit {
     private resultService: ResultService, private errorService: ErrorService) {
       this.user = authService.getUser();
       this.isAdmin = (this.user.role == "admin");
-      this.generalHandlers = [{name: "Reload", callback: window.location.reload}, {name: "Go to menus", callback: this.router.navigate.bind(this, ['/menu'])}];
+      this.generalHandlers = [{name: "Reload", callback: () => window.location.reload()}, {name: "Go to menus", callback: this.router.navigate.bind(this, ['/menu'])}];
     }
 
   ngOnInit() {
@@ -68,18 +69,18 @@ export class FormPage implements OnInit {
     .subscribe(
       (menu: MenuData) => {
         this.menu = menu;
-        this.isNewForm = (this.menu.form_id == undefined);
+        this.isNewForm = (this.menu.formId == undefined);
         if(!this.isNewForm){
-          this.formService.getForm(this.menu.form_id).subscribe(
+          this.formService.getForm(this.menu.formId).subscribe(
             (form) => {
               this.form = form;
               this.sections = form.sections;
             },
-            (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+            (error) => this.errorService.displayError(error.message, this.generalHandlers)
           ).add(() => this.loading = false)
         } else this.loading = false;
       },
-      (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+      (error) => this.errorService.displayError(error.message, this.generalHandlers)
     )
   }
 
@@ -186,18 +187,19 @@ export class FormPage implements OnInit {
             this.loading = true;
             this.form.name = data.title;
             this.form.description = data.description;
+            this.form.menuId = this.menu.id;
             this.formService.createForm({
               ...this.form,
               sections: this.sections
             }).subscribe(
               (data: {id: number}) => {
-                this.menu.form_id = data.id
-                this.menuService.updateMenu(this.menu.id, {form_id: data.id}).subscribe(
+                this.menu.formId = data.id
+                this.menuService.updateMenu(this.menu.id, {formId: data.id}).subscribe(
                   () => {  this.isNewForm = false },
-                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                  (error) => this.errorService.displayError(error.message, this.generalHandlers)
                 ).add(() => this.loading = false)
               },
-              (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+              (error) => this.errorService.displayError(error.message, this.generalHandlers)
             );
           }
         }
@@ -233,10 +235,10 @@ export class FormPage implements OnInit {
     this.resultService.createResult({
       name: `${this.form.name} - ${this.user.username}`,
       result: this.answers as Object as JSON,
-      formId: this.menu.form_id
+      formId: this.menu.formId
     }).subscribe(
       () => this.answerAlert(),
-      (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+      (error) => this.errorService.displayError(error.message, this.generalHandlers)
     ).add(() => this.sendingAnswer = false)
   }
 

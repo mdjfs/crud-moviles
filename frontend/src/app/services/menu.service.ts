@@ -9,21 +9,21 @@ import { storageKeys as authKeys } from './auth.service';
 
 export interface MenuData {
   id: number,
-  form_id?: number,
-  parent_id?:number,
+  formId?: number,
+  parentId?:number,
   name: string,
   childrens?: MenuData[]
 }
 
 export interface MenuCreate {
-  form_id?: number,
-  parent_id?:number,
+  formId?: number,
+  parentId?:number,
   name: string
 }
 
 export interface MenuUpdate {
-  form_id?: number,
-  parent_id?:number,
+  formId?: number,
+  parentId?:number,
   name?: string
 }
 

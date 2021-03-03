@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="start" *ngIf="parent">
-      <ion-button (click)="open(parent.parent_id)" *ngIf="parent.parent_id; else main">
+      <ion-button (click)="open(parent.parentId)" *ngIf="parent.parentId; else main">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
       <ng-template #main>

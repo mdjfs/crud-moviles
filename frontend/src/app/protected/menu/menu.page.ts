@@ -6,12 +6,12 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { FormService } from 'src/app/services/form.service';
 import { MenuCreate, MenuService } from 'src/app/services/menu.service';
-import { UserService, UserData } from 'src/app/services/user.service';
+import {  UserData } from 'src/app/services/user.service';
 
 export interface MenuData {
   id: number,
-  form_id?: number,
-  parent_id?:number,
+  formId?: number,
+  parentId?:number,
   name: string,
   childrens?: MenuData[]
 }
@@ -19,7 +19,7 @@ export interface MenuData {
 export interface MenuParent{
   id: number,
   name?: string,
-  parent_id?:number
+  parentId?:number
 }
 
 @Component({
@@ -42,7 +42,7 @@ export class MenuPage {
     private alertController: AlertController, private router: Router, private menuService: MenuService, private formService: FormService) {
       this.user = this.authService.getUser();
       this.isAdmin = (this.user.role == "admin");
-      this.generalHandlers = [{name: "Reload", callback: window.location.reload}];
+      this.generalHandlers = [{name: "Reload", callback: () => window.location.reload()}];
   }
 
   ionViewWillEnter() {
@@ -51,7 +51,7 @@ export class MenuPage {
 
   open(id: number){
     const target = this.menus.filter(value => value.id == id)[0];
-    if(target && target.form_id !== null) this.router.navigate(["/form",target.id])
+    if(target && target.formId) this.router.navigate(["/form",target.id])
     else this.router.navigate(["/menu",id]);
   }
 
@@ -63,19 +63,19 @@ export class MenuPage {
         (menu: MenuData) => {
           this.parent = {
             id: menu.id,
-            parent_id: menu.parent_id,
+            parentId: menu.parentId,
             name: menu.name
           }
           this.menus = menu.childrens;
         },
-        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+        (error) => this.errorService.displayError(error.message, this.generalHandlers)
       ).add(() => this.loading = false)
     }else{
       this.menuService.getMenu({ limit: this.deepthLimit.toString()}).subscribe(
         (menus: MenuData[]) => {
           this.menus = menus;
         },
-        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+        (error) => this.errorService.displayError(error.message, this.generalHandlers)
       ).add(() => this.loading = false)
     }
   }
@@ -98,14 +98,14 @@ export class MenuPage {
               const deleteMenu = () => {
                 this.menuService.deleteMenu(id).subscribe(
                   () => this.loadChildrens(),
-                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                  (error) => this.errorService.displayError(error.message, this.generalHandlers)
                 ).add(() => this.loading = false);
               }
-              if(menu.form_id){
-                this.formService.deleteForm({id: menu.form_id.toString()})
+              if(menu.formId){
+                this.formService.deleteForm({id: menu.formId.toString()})
                 .subscribe(
                   () => deleteMenu(),
-                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                  (error) => this.errorService.displayError(error.message, this.generalHandlers)
                 ).add(() => this.loading = false)
               }else{
                 deleteMenu()
@@ -119,7 +119,7 @@ export class MenuPage {
       this.loading = true;
       this.menuService.deleteMenu(id).subscribe(
         () => this.loadChildrens(),
-        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+        (error) => this.errorService.displayError(error.message, this.generalHandlers)
       ).add(() => this.loading = false);
     }
   }
@@ -136,7 +136,7 @@ export class MenuPage {
           text: 'Delete',
           handler: this.delete.bind(this, id)
         }]
-      if(target.childrens.length == 0 && target.form_id == undefined) buttons.push({
+      if(target.childrens.length == 0 && target.formId == undefined) buttons.push({
         text: 'Create Form',
         handler: () => {
           this.router.navigate(["/form",target.id])
@@ -173,13 +173,13 @@ export class MenuPage {
               this.menuService.createMenu(menu)
               .subscribe(
                 () => this.loadChildrens(),
-                (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                (error) => this.errorService.displayError(error.message, this.generalHandlers)
               ).add(() => this.creating = false);
             }
             if(this.parent && this.parent.id){
               create({
                 name: data.menu,
-                parent_id: this.parent.id
+                parentId: this.parent.id
               });
             }
             else{

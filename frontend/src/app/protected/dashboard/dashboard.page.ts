@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { FormService, FormData } from 'src/app/services/form.service';
 import { ResultService, ResultData } from 'src/app/services/result.service';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,16 +28,16 @@ export class DashboardPage {
     try{
     const results = await this.resultService.getResult({}).toPromise();
     this.results = results;
-    this.answersCount = results.length+1;
+    this.answersCount = results.length;
     const forms = await this.formService.getAllForms().toPromise();
     this.forms = forms;
-    this.formsCount = forms.length +1;
+    this.formsCount = forms.length ;
     const users = await this.authService.getAll().toPromise();
     this.users = users;
-    this.usersCount = users.length +1;
+    this.usersCount = users.length ;
     this.loadStats();
     }catch(e){
-      this.errorService.displayError(e.toString(), [{name: "reload", callback: window.location.reload}])
+      this.errorService.displayError(e.message, [{name: "reload", callback: () => window.location.reload()}])
     }
   }
 
@@ -64,7 +63,8 @@ export class DashboardPage {
           }
         }
       }
-      this.formsFilled = `${(totalFull/total * 100).toFixed(0)}%`;
+      const percentage =(totalFull/total * 100);
+      this.formsFilled = `${isNaN(percentage) ? 0 : percentage.toFixed(0)}%`;
     }
   }
 

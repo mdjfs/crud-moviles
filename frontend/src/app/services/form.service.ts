@@ -12,7 +12,8 @@ export interface FormData{
   description: string,
   sections: SectionData[],
   createdAt?: string,
-  updatedAt?:string
+  updatedAt?:string,
+  menuId: number
 }
 
 export interface SectionData{

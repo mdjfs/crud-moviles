@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { ErrorService } from 'src/app/services/error.service';
-import { FormService } from 'src/app/services/form.service';
 import { ResultData, ResultService } from 'src/app/services/result.service';
 import { AnswerDetailPage } from './answer-detail/answer-detail.page';
 
