@@ -4,7 +4,7 @@ import Queries from "../queries/constants";
 
 import { QueryTypes } from "sequelize";
 
-import { Table, Column, Model, ForeignKey, AllowNull,  BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, ForeignKey, AllowNull,  BelongsTo, HasOne } from "sequelize-typescript";
 
 
 interface FormatedMenu{
@@ -39,7 +39,7 @@ export default class Menu extends Model{
     @Column
     formId: number
 
-    @BelongsTo(() => Form, {
+    @HasOne(() => Form, {
         onDelete: "CASCADE"
     })
     form: Form
@@ -48,10 +48,8 @@ export default class Menu extends Model{
         const hasLimit = limit && !isNaN(limit);
         const replacements: {id: number, limit?: number} = { id: this.id }
         if(hasLimit) replacements.limit = limit;
-        const menus: Menu[] =  await this.sequelize.
-            query(Queries.MENU_RECURSIVE("menu", hasLimit), 
-            {replacements: replacements, 
-            model: Menu, type: QueryTypes.SELECT});
+        const query = this.sequelize.getDialect() == "mysql" ? Queries.MENU_RECURSIVE_MYSQL(hasLimit) : Queries.MENU_RECURSIVE_POSTGRESQL(hasLimit);
+        const menus: Menu[] =  await this.sequelize.query(query, {replacements: replacements, model: Menu, type: QueryTypes.SELECT});
         return this.makeTree(menus);
     }
 

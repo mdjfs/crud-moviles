@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasMany, ForeignKey, HasOne, BelongsTo } from "sequelize-typescript";
+import Menu from "./menu";
 import Result from "./result";
 import Section from "./section";
 
@@ -20,4 +21,13 @@ export default class Form extends Model{
         onDelete: "CASCADE"
     })
     sections: Section[]
+
+    @ForeignKey(() => Menu)
+    menuId: number
+
+    @BelongsTo(() => Menu, {
+        onDelete: "CASCADE"
+    })
+    menu: Menu
+
 }
