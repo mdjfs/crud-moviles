@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Form_App</string>
-    <string name="title_activity_main">Form_App</string>
+    <string name="app_name">F-Forms</string>
+    <string name="title_activity_main">F-Forms</string>
     <string name="package_name">io.ionic.mdjfs</string>
     <string name="custom_url_scheme">io.ionic.mdjfs</string>
 </resources>
