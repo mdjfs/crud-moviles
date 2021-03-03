@@ -35,12 +35,13 @@ export class RegistrationPage implements OnInit {
     if(!user || !pass){
       this.error = "Please enter a username and password";
     }else{
+      this.loading = true;
       this.error = undefined;
       this.auth.register({username: user, password: pass})
       .subscribe(
         () => this.router.navigate(['/menu']),
         () => this.error = `User exists or Server Error.`
-      )
+      ).add(() => this.loading = false)
     }
   }
 

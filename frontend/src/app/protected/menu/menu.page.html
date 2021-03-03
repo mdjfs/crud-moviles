@@ -1,7 +1,12 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="!parent && isAdmin">
+      <ion-button [routerLink]="['/dashboard']">
+        <ion-icon name="stats-chart-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="start" *ngIf="parent">
-      <ion-button (click)="open(parent.parentId)" *ngIf="parent.parentId; else main">
+      <ion-button (click)="open(parent.parent_id)" *ngIf="parent.parent_id; else main">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
       <ng-template #main>
@@ -12,7 +17,7 @@
     </ion-buttons>
     <ion-title>{{ parent && parent.name ? parent.name : "Forms" }} - {{ user && user.username ? user.username : ""}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="userService.logout()">
+      <ion-button (click)="logout()">
         <ion-icon slot="icon-only" ios="log-out-outline" md="log-out-outline" ></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -20,20 +25,25 @@
 </ion-header>
 
 <ion-content>
-  <ion-list  class="blue-background" style="min-width: 100%; min-height: 100%; ">
-    <ion-item *ngFor="let menu of menus"color="none" lines="none">
-      <ion-button (click)="open(menu.id)" (press)="options(menu.id)" expand="block" size="large" shape="round">{{menu.name}}</ion-button>
-    </ion-item>
-    <ion-item color="none" lines="none" *ngIf="isAdmin">
-      <ion-button *ngIf="loading; else add" expand="block" size="large" color="transparent" shape="round">
-        <ion-spinner class="ion-padding" color="primary"></ion-spinner>
-      </ion-button>
-      <ng-template #add>
-        <ion-button (click)="create()" expand="block" size="large" color="transparent" shape="round">
-          <ion-icon name="add-outline"></ion-icon>
+  <div *ngIf="loading; else content" class="ion-text-center ion-padding-vertical">
+    <ion-spinner color="primary"   ></ion-spinner>
+  </div>
+  <ng-template #content>
+    <ion-list  class="blue-background ion-padding" style="min-width: 100%; min-height: 100%; ">
+      <ion-item button *ngFor="let menu of menus" (click)="open(menu.id)" (press)="options(menu.id)">
+        <ion-label >{{menu.name}}</ion-label>
+      </ion-item>
+      <ion-item color="none" lines="none" *ngIf="isAdmin">
+        <ion-button *ngIf="creating; else add" expand="block" size="large" color="transparent" shape="round">
+          <ion-spinner class="ion-padding" color="primary"></ion-spinner>
         </ion-button>
-      </ng-template>
-    </ion-item>
-  </ion-list>
+        <ng-template #add>
+          <ion-button (click)="create()" expand="block" size="large" color="transparent" shape="round" class="ion-margin">
+            <ion-icon name="add-outline"></ion-icon>
+          </ion-button>
+        </ng-template>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>
 

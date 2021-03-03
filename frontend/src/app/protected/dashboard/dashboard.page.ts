@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { ErrorService } from 'src/app/services/error.service';
 import { FormService, FormData } from 'src/app/services/form.service';
 import { ResultService, ResultData } from 'src/app/services/result.service';
 import { UserService } from 'src/app/services/user.service';
@@ -8,7 +11,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage {
 
   answersCount: number = undefined;
   formsCount: number = undefined;
@@ -18,30 +21,29 @@ export class DashboardPage implements OnInit {
   users = undefined;
   usersCount: number = undefined;
 
-  constructor(private resultService: ResultService, private formService: FormService, private userService: UserService) { }
+  constructor(private resultService: ResultService, private formService: FormService, private authService: AuthService, private router: Router, private errorService: ErrorService) {
+    if(this.authService.getUser().role !== "admin") this.router.navigate(["/menu"])
+  }
 
-  ngOnInit() {
-    this.resultService.getResult({}).subscribe(
-      (result: ResultData[]) => {
-        this.results = result;
-        this.answersCount = result.length+1;
-        this.loadStats();
-      }
-    )
-    this.formService.getAllForms().subscribe(
-      (result: FormData[]) => {
-        this.forms = result;
-        this.formsCount = result.length+1;
-        this.loadStats();
-      }
-    )
-    this.userService.getAll().subscribe(
-      (result) => {
-        this.users = result;
-        this.usersCount = result.length+1;
-        this.loadStats();
-      }
-    )
+  async loadData(){
+    try{
+    const results = await this.resultService.getResult({}).toPromise();
+    this.results = results;
+    this.answersCount = results.length+1;
+    const forms = await this.formService.getAllForms().toPromise();
+    this.forms = forms;
+    this.formsCount = forms.length +1;
+    const users = await this.authService.getAll().toPromise();
+    this.users = users;
+    this.usersCount = users.length +1;
+    this.loadStats();
+    }catch(e){
+      this.errorService.displayError(e.toString(), [{name: "reload", callback: window.location.reload}])
+    }
+  }
+
+  ionViewWillEnter(){
+    this.loadData();
   }
 
   loadStats(){

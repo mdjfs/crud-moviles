@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ErrorHandler } from 'src/app/components/modals/error/error.page';
+import { AuthService } from 'src/app/services/auth.service';
+import { ErrorService } from 'src/app/services/error.service';
 import { FormService } from 'src/app/services/form.service';
-import { MenuService } from 'src/app/services/menu.service';
+import { MenuCreate, MenuService } from 'src/app/services/menu.service';
 import { UserService, UserData } from 'src/app/services/user.service';
 
 export interface MenuData {
   id: number,
-  formId?: number,
-  parentId?:number,
+  form_id?: number,
+  parent_id?:number,
   name: string,
   childrens?: MenuData[]
 }
@@ -16,7 +19,7 @@ export interface MenuData {
 export interface MenuParent{
   id: number,
   name?: string,
-  parentId?:number
+  parent_id?:number
 }
 
 @Component({
@@ -32,20 +35,14 @@ export class MenuPage {
   user: UserData = undefined;
   deepthLimit: number = 2;
   loading: boolean = false;
+  creating: boolean = false;
+  generalHandlers: ErrorHandler[] = undefined;
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService,
+  constructor(private activatedRoute: ActivatedRoute,  private authService: AuthService, private errorService: ErrorService,
     private alertController: AlertController, private router: Router, private menuService: MenuService, private formService: FormService) {
-
-  }
-
-  ngOnInit(){
-    this.userService.getData()
-    .subscribe(
-      (user: UserData) => {
-        this.user = user;
-        this.isAdmin = (this.user.role == "admin")
-      }
-    );
+      this.user = this.authService.getUser();
+      this.isAdmin = (this.user.role == "admin");
+      this.generalHandlers = [{name: "Reload", callback: window.location.reload}];
   }
 
   ionViewWillEnter() {
@@ -54,29 +51,32 @@ export class MenuPage {
 
   open(id: number){
     const target = this.menus.filter(value => value.id == id)[0];
-    if(target && target.formId) this.router.navigate(["/form",target.id])
+    if(target && target.form_id !== null) this.router.navigate(["/form",target.id])
     else this.router.navigate(["/menu",id]);
   }
 
   loadChildrens(){
+    this.loading = true
     const parentId = this.activatedRoute.snapshot.params['id'];
     if(parentId){
       this.menuService.getMenu({id: parentId , limit: this.deepthLimit.toString()}).subscribe(
         (menu: MenuData) => {
           this.parent = {
             id: menu.id,
-            parentId: menu.parentId,
+            parent_id: menu.parent_id,
             name: menu.name
           }
           this.menus = menu.childrens;
-        }
-      )
+        },
+        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+      ).add(() => this.loading = false)
     }else{
       this.menuService.getMenu({ limit: this.deepthLimit.toString()}).subscribe(
         (menus: MenuData[]) => {
           this.menus = menus;
-        }
-      )
+        },
+        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+      ).add(() => this.loading = false)
     }
   }
 
@@ -94,21 +94,33 @@ export class MenuPage {
           }, {
             text: 'Ok',
             handler: () => {
-              if(menu.formId){
-                this.formService.deleteForm({id: menu.formId.toString()})
+              this.loading = true;
+              const deleteMenu = () => {
+                this.menuService.deleteMenu(id).subscribe(
+                  () => this.loadChildrens(),
+                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                ).add(() => this.loading = false);
               }
-              this.menuService.deleteMenu(id).subscribe(
-                () => this.loadChildrens()
-              );
+              if(menu.form_id){
+                this.formService.deleteForm({id: menu.form_id.toString()})
+                .subscribe(
+                  () => deleteMenu(),
+                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                ).add(() => this.loading = false)
+              }else{
+                deleteMenu()
+              }
             }
           }
         ]
       });
       await alert.present();
     }else{
+      this.loading = true;
       this.menuService.deleteMenu(id).subscribe(
-        () => this.loadChildrens()
-      );
+        () => this.loadChildrens(),
+        (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+      ).add(() => this.loading = false);
     }
   }
 
@@ -124,7 +136,7 @@ export class MenuPage {
           text: 'Delete',
           handler: this.delete.bind(this, id)
         }]
-      if(target.childrens.length == 0 && target.formId == undefined) buttons.push({
+      if(target.childrens.length == 0 && target.form_id == undefined) buttons.push({
         text: 'Create Form',
         handler: () => {
           this.router.navigate(["/form",target.id])
@@ -155,22 +167,24 @@ export class MenuPage {
         }, {
           text: 'Ok',
           handler: (data) => {
-            this.loading = true;
+
+            const create = (menu: MenuCreate) => {
+              this.creating = true;
+              this.menuService.createMenu(menu)
+              .subscribe(
+                () => this.loadChildrens(),
+                (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+              ).add(() => this.creating = false);
+            }
             if(this.parent && this.parent.id){
-              this.menuService.createMenu({
+              create({
                 name: data.menu,
-                parentId: this.parent.id
-              }).subscribe(() => {
-                this.loadChildrens();
-                this.loading = false;
+                parent_id: this.parent.id
               });
             }
             else{
-              this.menuService.createMenu({
+              create({
                 name: data.menu
-              }).subscribe(() => {
-                this.loadChildrens();
-                this.loading = false;
               });
             }
           }
@@ -178,6 +192,10 @@ export class MenuPage {
       ]
     });
     await alert.present();
+  }
+
+  logout(){
+    this.authService.logout();
   }
 
 }

@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Oops..</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-grid class="ion-text-center">
+  <ion-row>
+    <ion-col><ion-icon name="bug-outline" style="font-size: 64px; margin: 10%; color: firebrick;"></ion-icon></ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col><h1>Something wrong happens</h1></ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-col><h3 style="background-color: #b2222229;
+        border-radius: 2%;
+        padding: 5%;">{{error}}</h3></ion-col>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <div *ngFor="let handler of handlers"><ion-button color="danger" (click)="handler.callback()">{{handler.name}}</ion-button></div>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>
+</ion-content>

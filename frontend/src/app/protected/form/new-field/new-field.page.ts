@@ -45,9 +45,9 @@ export class NewFieldPage implements OnInit {
     this.options = this.options.filter((_, i) => i !== index);
   }
 
-  dismiss(question: string, type: string){
+  dismiss(question: string|number, type: string){
     this.modalCtrl.dismiss({
-      question: question,
+      question: question as string,
       type: type,
       options: this.options
     });

@@ -3,8 +3,8 @@
   <ion-grid  class="blue-background ion-text-center" style="min-width: 100%; min-height: 100%; ">
     <ion-row>
       <ion-col *ngIf="answersCount">
-        <ion-card class="ion-text-center" >
-          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ answersCount }}</strong> answers</h1>
+        <ion-card class="ion-text-center" [routerLink]="['/answers']" >
+          <h1><ion-icon name="stats-chart-outline"></ion-icon> <strong>{{ answersCount }}</strong> answers</h1><h6>(Touch to see answers)</h6>
         </ion-card>
       </ion-col>
       <ion-col *ngIf="formsCount">

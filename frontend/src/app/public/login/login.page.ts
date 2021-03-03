@@ -9,7 +9,7 @@ import {storageKeys as welcomeKeys} from '../welcome/welcome.page';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
 
   loading: boolean = undefined;
   error: string = undefined;
@@ -18,10 +18,6 @@ export class LoginPage implements OnInit {
   constructor(private router: Router, private auth: AuthService) {
     this.hadWelcome = this.hasWelcome();
    }
-
-  ngOnInit() {
-
-  }
 
   hasWelcome(){
     return localStorage.getItem(welcomeKeys.welcome) !== null;
@@ -32,16 +28,17 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/welcome']);
   }
 
-  processLogin(user, pass){
+  processLogin(user: string, pass: string){
     if(!user || !pass){
       this.error = "Please enter a username and password";
     }else{
+      this.loading = true;
       this.error = undefined;
       this.auth.login({username: user, password: pass})
       .subscribe(
         () => this.router.navigate(['/menu']),
         () => this.error = `Invalid username, password or Server Error.`
-      )
+      ).add(() => this.loading = false)
     }
   }
 }

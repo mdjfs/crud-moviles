@@ -14,7 +14,7 @@ export class InputComponent implements OnInit {
 
   ngOnInit() {}
 
-  setAnswer(value: string){
-    this.answered.emit(value);
+  setAnswer(value: string|number){
+    this.answered.emit(value as string);
   }
 }

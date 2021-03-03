@@ -3,3 +3,26 @@
   background-size: 100% 100%;
 
 }
+
+
+.header-item{
+  display: block;
+position: relative;
+width: 100%;
+}
+
+
+.title{
+  font-size: large;
+  text-decoration: underline;
+}
+
+.description{
+  font-size: medium;
+}
+
+
+.header-container{
+  color: white;
+  background-color: #181818;
+}

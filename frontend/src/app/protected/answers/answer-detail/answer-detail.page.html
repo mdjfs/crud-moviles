@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ result.name }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="loading; else content" class="ion-text-center ion-padding-vertical">
+    <ion-spinner color="primary"   ></ion-spinner>
+  </div>
+  <ng-template #content>
+    <ion-list  class="blue-background ion-padding" style="min-width: 100%; min-height: 100%; ">
+      <ion-card *ngFor="let detail of details">
+        <ion-card-header>
+          <ion-card-title>{{detail.section}}</ion-card-title>
+        </ion-card-header>
+        <ion-item *ngFor="let answer of detail.answers" class="ion-text-wrap">
+
+              <ion-col>
+
+                <h4>{{answer.question}}</h4>
+                <h6 >{{parseResult(answer.answer)}}</h6>
+                </ion-col>
+        </ion-item>
+      </ion-card>
+    </ion-list>
+  </ng-template>
+</ion-content>
+

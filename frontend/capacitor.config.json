@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "Form_App",
+  "appId": "io.ionic.mdjfs",
+  "appName": "F-Forms",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

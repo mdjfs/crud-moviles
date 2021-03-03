@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {MenuData, MenuService} from '../../services/menu.service'
-import {FormData, SectionData, FieldData, FormService} from '../../services/form.service';
+import {FormData, SectionData,  FormService} from '../../services/form.service';
 import { UserService, UserData } from 'src/app/services/user.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { NewFieldPage } from './new-field/new-field.page';
 import { ResultService } from 'src/app/services/result.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { ErrorHandler } from 'src/app/components/modals/error/error.page';
 
 
 interface SectionAnswer{
@@ -38,42 +41,45 @@ export class FormPage implements OnInit {
   };
   user: UserData = undefined;
   isAdmin: boolean = false;
-  isNewForm: boolean = true;
+  isNewForm: boolean = undefined;
   sendingAnswer: boolean = false;
 
   answers: SectionAnswer = {};
+  loading: boolean = false;
+  generalHandlers: ErrorHandler[] = undefined;
 
-  constructor(private menuService: MenuService, private activatedRoute: ActivatedRoute,
-    private userService: UserService, private modalController: ModalController,
+  constructor(private menuService: MenuService, private activatedRoute: ActivatedRoute, private authService: AuthService,
+    private modalController: ModalController, private router: Router,
     private alertController: AlertController, private formService: FormService,
-    private resultService: ResultService) { }
+    private resultService: ResultService, private errorService: ErrorService) {
+      this.user = authService.getUser();
+      this.isAdmin = (this.user.role == "admin");
+      this.generalHandlers = [{name: "Reload", callback: window.location.reload}, {name: "Go to menus", callback: this.router.navigate.bind(this, ['/menu'])}];
+    }
 
   ngOnInit() {
-    this.userService.getData()
-    .subscribe(
-      (user: UserData) => {
-        this.user = user;
-        this.isAdmin = (this.user.role == "admin")
-      }
-    );
     this.loadForm();
   }
 
   loadForm(){
+    this.loading = true;
     const menuId = this.activatedRoute.snapshot.params['menuId'];
-    this.menuService.getMenu({id: menuId.toString(), limit: "1"}).subscribe(
+    this.menuService.getMenu({id: menuId.toString(), limit: "1"})
+    .subscribe(
       (menu: MenuData) => {
         this.menu = menu;
-        this.isNewForm = (this.menu.formId == undefined);
+        this.isNewForm = (this.menu.form_id == undefined);
         if(!this.isNewForm){
-          this.formService.getForm(this.menu.formId).subscribe(
+          this.formService.getForm(this.menu.form_id).subscribe(
             (form) => {
               this.form = form;
               this.sections = form.sections;
-            }
-          )
-        }
-      }
+            },
+            (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+          ).add(() => this.loading = false)
+        } else this.loading = false;
+      },
+      (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
     )
   }
 
@@ -177,6 +183,7 @@ export class FormPage implements OnInit {
         }, {
           text: 'Ok',
           handler: (data) => {
+            this.loading = true;
             this.form.name = data.title;
             this.form.description = data.description;
             this.formService.createForm({
@@ -184,11 +191,13 @@ export class FormPage implements OnInit {
               sections: this.sections
             }).subscribe(
               (data: {id: number}) => {
-                this.menu.formId = data.id
-                this.menuService.updateMenu(this.menu.id, {formId: data.id}).subscribe(
-                  () => {  this.isNewForm = false }
-                )
-              }
+                this.menu.form_id = data.id
+                this.menuService.updateMenu(this.menu.id, {form_id: data.id}).subscribe(
+                  () => {  this.isNewForm = false },
+                  (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+                ).add(() => this.loading = false)
+              },
+              (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
             );
           }
         }
@@ -197,18 +206,42 @@ export class FormPage implements OnInit {
     await alert.present();
   }
 
+  async answerAlert(){
+    const alert = await this.alertController.create({
+      header: 'Answered',
+      subHeader: 'Your reply has been sent successfully',
+      buttons: [
+        {
+          text: 'Keep answering',
+          handler: () => {
+            this.loadForm();
+          }
+        }, {
+          text: 'Go to menus',
+          handler: () => {
+            this.router.navigate(['/menu']);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   sendAnswers(){
     this.sendingAnswer = true;
     this.resultService.createResult({
       name: `${this.form.name} - ${this.user.username}`,
       result: this.answers as Object as JSON,
-      formId: this.menu.formId
+      formId: this.menu.form_id
     }).subscribe(
-      () => {
-        this.loadForm();
-        this.sendingAnswer = false;
-      }
-    )
+      () => this.answerAlert(),
+      (error) => this.errorService.displayError(error.toString(), this.generalHandlers)
+    ).add(() => this.sendingAnswer = false)
+  }
+
+  logout(){
+    this.authService.logout()
   }
 
 }

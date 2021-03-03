@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="menu">
-      <ion-button [routerLink]="['/','menu',menu.parentId]" *ngIf="menu.parentId !== null; else main">
+      <ion-button [routerLink]="['/','menu', menu.parent_id]" *ngIf="menu.parent_id !== null; else main">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
       <ng-template #main>
@@ -12,42 +12,46 @@
     </ion-buttons>
     <ion-title>{{ menu ? menu.name + " (Form)" : ""}} - {{ user && user.username ? user.username : ""}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="userService.logout()">
+      <ion-button (click)="logout()">
         <ion-icon slot="icon-only" ios="log-out-outline" md="log-out-outline" ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar color="dark" *ngIf="form.name && form.description">
-    <ion-title class="ion-padding-top">Form title: {{form.name}}
-
-    <p class="ion-padding-start">Description: {{form.description}}</p>
-    </ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list  class="blue-background ion-text-center" style="min-width: 100%; min-height: 100%; ">
+  <div *ngIf="loading; else content" class="ion-text-center ion-padding-vertical">
+    <ion-spinner color="primary"   ></ion-spinner>
+  </div>
+  <ng-template #content>
+    <ion-list class="blue-background ion-text-center ion-no-padding" style="min-width: 100%; min-height: 100%; ">
+      <div class="header-container ion-no-margin ion-padding" *ngIf="form.name && form.description" >
 
-
-  <ion-card *ngFor="let section of sections; let i = index">
-    <ion-card-header><ion-icon name="trash" (click)="deleteSection(i)" *ngIf="isNewForm"></ion-icon>{{section.name}}</ion-card-header>
-    <ion-item *ngFor="let field of section.fields; let i2 = index;">
-      <ion-icon name="trash" (click)="deleteField(i, i2)" *ngIf="isNewForm"></ion-icon>
-      <app-input (answered)="trackAnswer(i, i2, $event)" [question]="field.question" *ngIf="field.type == 'input'"></app-input>
-      <app-checkbox (answered)="trackAnswer(i, i2, $event)" [question]="field.question" [options]="field.options" *ngIf="field.type == 'checkbox'"></app-checkbox>
-      <app-check (answered)="trackAnswer(i, i2, $event)" [question]="field.question" *ngIf="field.type == 'check'"></app-check>
-      <app-radiobox (answered)="trackAnswer(i, i2, $event)" [question]="field.question" [options]="field.options" *ngIf="field.type == 'radiobox'"></app-radiobox>
-    </ion-item>
-    <ion-button *ngIf="isNewForm" (click)="newField(i)"><ion-icon name="add-outline"></ion-icon> Add Field</ion-button>
-  </ion-card>
-  <ion-button *ngIf="isNewForm" (click)="newSection()"><ion-icon name="add-outline"></ion-icon> Add Section</ion-button>
-  <ion-button *ngIf="isNewForm" (click)="save()"> Save Form</ion-button>
-  <ion-button color="dark" *ngIf="sendingAnswer; else answer">
-    <ion-spinner class="ion-padding" color="primary"   ></ion-spinner>
-  </ion-button>
-  <ng-template #answer>
-    <ion-button  *ngIf="!isNewForm" (click)="sendAnswers()"> Send Answers </ion-button>
+        <ion-col class="ion-text-center">
+          <h1  class="ion-text-wrap header-item title">{{form.name}}</h1>
+          <h6 class="ion-text-wrap header-item description">{{form.description}}</h6>
+      </ion-col>
+      </div>
+    <ion-card *ngFor="let section of sections; let i = index">
+      <ion-card-header><ion-icon name="trash" (click)="deleteSection(i)" *ngIf="isNewForm"></ion-icon>{{section.name}}</ion-card-header>
+      <ion-item *ngFor="let field of section.fields; let i2 = index;">
+        <ion-icon name="trash" (click)="deleteField(i, i2)" *ngIf="isNewForm"></ion-icon>
+        <app-input (answered)="trackAnswer(i, i2, $event)" [question]="field.question" *ngIf="field.type == 'input'"></app-input>
+        <app-checkbox (answered)="trackAnswer(i, i2, $event)" [question]="field.question" [options]="field.options" *ngIf="field.type == 'checkbox'"></app-checkbox>
+        <app-check (answered)="trackAnswer(i, i2, $event)" [question]="field.question" *ngIf="field.type == 'check'"></app-check>
+        <app-radiobox (answered)="trackAnswer(i, i2, $event)" [question]="field.question" [options]="field.options" *ngIf="field.type == 'radiobox'"></app-radiobox>
+      </ion-item>
+      <ion-button *ngIf="isNewForm" (click)="newField(i)"><ion-icon name="add-outline"></ion-icon> Add Field</ion-button>
+    </ion-card>
+    <ion-button *ngIf="isNewForm" (click)="newSection()"><ion-icon name="add-outline"></ion-icon> Add Section</ion-button>
+    <ion-button *ngIf="isNewForm" (click)="save()"> Save Form</ion-button>
+    <ion-button color="dark" *ngIf="sendingAnswer; else answer">
+      <ion-spinner class="ion-padding" color="primary"   ></ion-spinner>
+    </ion-button>
+    <ng-template #answer>
+      <ion-button  *ngIf="!isNewForm" (click)="sendAnswers()"> Send Answers </ion-button>
+    </ng-template>
+    </ion-list>
   </ng-template>
-  </ion-list>
 </ion-content>
 

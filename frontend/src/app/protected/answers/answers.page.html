@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/dashboard']">
+        <ion-icon name="arrow-back-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Answers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="loading; else content" class="ion-text-center ion-padding-vertical">
+    <ion-spinner color="primary"   ></ion-spinner>
+  </div>
+  <ng-template #content>
+    <ion-list  class="blue-background ion-padding" style="min-width: 100%; min-height: 100%; ">
+      <ion-item button *ngFor="let result of results" (click)="open(result.id)" >
+        <ion-label >{{result.name}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+</ion-content>
+

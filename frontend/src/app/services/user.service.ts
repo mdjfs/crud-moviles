@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { storageKeys as authKeys } from './auth.service';
 
 
 export interface UserData{
@@ -22,26 +21,30 @@ export interface UserData{
 })
 export class UserService {
 
-  api_url: string = undefined;
-  headers: HttpHeaders = undefined;
+  protected api_url: string = undefined;
+  protected headers: HttpHeaders = undefined;
+  protected user: UserData = undefined;
 
-  constructor(private http: HttpClient) {
+  constructor(protected http: HttpClient) {
     this.api_url = environment.api_url;
-    this.headers = new HttpHeaders({'Content-Type': 'application/json', [authKeys.auth]: localStorage.getItem(authKeys.auth)});
   }
 
-  getData(): Observable<UserData>{
+  protected loadToken(token: string){
+    this.headers = new HttpHeaders({'Content-Type': 'application/json', 'Authorization': token});
+  }
+
+  public getData(): Observable<UserData>{
     const request =  this.http.get<UserData>(`${this.api_url}/user`,  { headers: this.headers }).pipe(share());
     return request;
   }
 
-  getAll(): Observable<JSON[]>{
+  public getUser(): UserData{
+    return this.user;
+  }
+
+  public getAll(): Observable<JSON[]>{
     const request =  this.http.get<JSON[]>(`${this.api_url}/user/all`,  { headers: this.headers }).pipe(share());
     return request;
   }
 
-  logout(){
-    localStorage.removeItem(authKeys.auth);
-    window.location.reload();
-  }
 }

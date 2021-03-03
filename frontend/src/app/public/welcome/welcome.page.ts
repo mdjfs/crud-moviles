@@ -14,21 +14,20 @@ const storageKeys = {
 })
 export class WelcomePage{
 
-  constructor(private router: Router, private auth: AuthService, private userService: UserService){}
+  constructor(private router: Router, private auth: AuthService, private authService: AuthService){}
 
-  ngOnInit(){
-    if(!this.auth.isLogged()){
+  async ngOnInit(){
+    const isLogged = await this.auth.isLogged();
+    if(!isLogged){
       if(localStorage.getItem(storageKeys.welcome)){
         this.router.navigate(['/login']);
       }else{
         localStorage.setItem(storageKeys.welcome, "true");
       }
     }else{
-      this.userService.getData()
-      .subscribe((user) => {
-        if(user.role == "admin") this.router.navigate(['/dashboard']);
-      })
-      this.router.navigate(['/menu']);
+      const user = this.authService.getUser();
+      if(user.role == "admin") this.router.navigate(['/dashboard']);
+      else this.router.navigate(['/menu']);
     }
   }
 }

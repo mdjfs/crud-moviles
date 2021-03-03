@@ -1,5 +1,5 @@
 <ion-item>
-  <ion-radio-group value="biff" (ionChange)="setAnswer($event.detail.value)">
+  <ion-radio-group value="biff" (ionChange)="setAnswer(radio.value)" #radio>
     <ion-list-header>
       <ion-label>{{question}}</ion-label>
     </ion-list-header>

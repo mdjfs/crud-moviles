@@ -39,7 +39,18 @@ const routes: Routes = [
     path: 'dashboard',
     loadChildren: () => import('./protected/dashboard/dashboard.module').then( m => m.DashboardPageModule),
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'error',
+    loadChildren: () => import('./components/modals/error/error.module').then( m => m.ErrorPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'answers',
+    loadChildren: () => import('./protected/answers/answers.module').then( m => m.AnswersPageModule),
+    canActivate: [AuthGuardService]
   }
+
 
 
 
